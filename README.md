@@ -1,2 +1,2 @@
 # fallstrap
-Boostrap project and examples done in fall 2016
+My personal boostrap project and examples done in fall 2016

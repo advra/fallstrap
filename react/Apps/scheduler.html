@@ -13,6 +13,8 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- mytheme-->
+	<link rel="stylesheet" href="scheduler.css">
 	<!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
@@ -36,7 +38,7 @@
 					//note: initally this is empty
 					//we can populate the array by directly manipulating it
 					//maybe in the future store array somewhere and unload it
-					tasksArray: [] 
+					tasksArray: [], savedTasksArray:[], finishedTasks:[] 
 				}
 			},
 
@@ -52,6 +54,33 @@
 				//arr.splice(i,0,newText);	//adds to array with 0 deletes
 				this.setState({tasksArray: arr});
 				console.log("after: "+arr);
+			},
+
+			//gets item put puts it into the savedTasksArray
+			saveTaskLater: function(i){
+				var arr = this.state.tasksArray;
+				var arr2 = this.state.savedTasksArray;
+				var tempData = arr[i];
+				arr2.push(tempData);
+				arr.splice(i,1);
+				this.setState({tasksArray: arr});
+				this.setState({savedTasksArray: arr2});
+				console.log("tasksArray: "+ arr);
+				console.log("savedTasks: "+ arr2);
+
+			},
+
+			finishTask: function(i){
+				var arr = this.state.tasksArray;
+				var arr2 = this.state.finishedTasks;
+				var tempData = arr[i];
+				arr2.push(tempData);
+				arr.splice(i,1);
+				this.setState({tasksArray: arr});
+				this.setState({finishedTasks: arr2});
+				console.log("tasksArray: "+ arr);
+				console.log("finishedTasks: "+ arr2);
+
 			},
 
 			//removing a published task
@@ -80,12 +109,27 @@
 			eachTask: function(text,i){
 				return	(
 						<li key = {i} className="list-group-item">
-							<IndividualTask key={i} index={i} updateArray={this.updateTask} deleteTask={this.removeTask}>
+							<IndividualTask key={i} index={i} deleteTask={this.removeTask} finishTask={this.finishTask}>
 								{text} 
 							</IndividualTask>
 						</li>
 						)
 			},
+
+			eachFinishedTask: function(text,i){
+				return	(
+
+						<td key = {i} className="list-group-item list-group-item-success">
+							<FinishedTasks key={i} index={i} textfield={text} className="list-group-item list-group-item-success">
+								{text} 
+							</FinishedTasks>
+
+						</td>
+
+
+						)
+			},
+
 
 			render: function(){
 				return	(
@@ -103,10 +147,18 @@
 								  </ul>
 								</div>
 
-								{
+								<div className="panel panel-default">
+								  <div className="panel-heading"><b>Completed Tasks</b></div>
+								  <table className="table">
+								  <tr>
+								  	{
+								    this.state.finishedTasks.map(this.eachFinishedTask)
+								  	}
+								  </tr>
+								  </table>
+								</div>
 
-									
-								}
+
 							</div>
 
 				);
@@ -154,7 +206,8 @@
 		hideFormRender: function(){
 			return	(
 				<div>
-					<button onClick={this.addTaskBtn} type="button" className="btn btn-default">Add Task</button>
+					<button onClick={this.addTaskBtn} type="button" className="btn btn-default button-full">Add Task</button>
+					
 				</div>
 			);
 
@@ -171,6 +224,20 @@
 
 	});
 
+	var FinishedTasks = React.createClass({
+		getInitialState:function(){
+			return{showfinished: false}
+		},
+
+		render: function(){
+			return(
+					<div>
+						{this.props.children}
+					</div>
+			);
+		}
+	});
+
 	var IndividualTask = React.createClass({
 		getInitialState: function(){
 			return{editTask: false}
@@ -185,6 +252,11 @@
 			this.props.deleteTask(this.props.index);
 		},
 
+		finishBtn: function(){
+			console.log("deleting task");
+			this.props.finishTask(this.props.index);
+		},
+
 		saveBtn: function (){
 			console.log("saving task");
 		},
@@ -192,7 +264,8 @@
 		renderDefault: function(){
 			return	(
 					<div>
-						<p>{this.props.children} <a onClick={this.deleteBtn} href="#">x</a><p>
+						{this.props.children} 
+						<DropDown passDeleteBtn={this.deleteBtn} passFinishBtn={this.finishBtn}></DropDown>
 					</div>
 			);
 		},
@@ -204,6 +277,33 @@
 		render: function(){
 			//display each individual form
 			return this.renderDefault();
+		}
+	});
+
+	var DropDown = React.createClass({
+		passDelete: function(){
+			this.props.passDeleteBtn(this.props.index);
+		},
+		passFinish: function(){
+			this.props.passFinishBtn(this.props.index);
+		},
+
+
+		render: function(){
+			return(
+					<div className="btn-group  pull-right offset" >
+					  	<button onClick = {this.passFinish} type="button" className="btn btn-success">Finish</button>
+					  	<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    	<span className="caret"></span>
+					    	<span className="sr-only">Toggle Dropdown</span>
+					  	</button>
+					  	<ul className="dropdown-menu">
+					    	<li><a onClick={this.passEdit} href="#">Edit</a></li>
+						    <li role="separator" className="divider"></li>
+						    <li><a onClick={this.passDelete} href="#">Delete</a></li>
+					  	</ul>
+					</div>
+			);
 		}
 	});
 

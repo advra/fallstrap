@@ -9,13 +9,18 @@
     <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
 
     <!--- Bootstrap --->
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
+
 <body>
 <div class="panel panel-body">
 <h1>Simple Scheduler</h1>
-<p>This is a small app that assigns and schedules tasks. Click on the "Add Task" button below to add a task.</p>
+<p>This is a small app that assigns and schedules tasks. Click on the "Add Task" button below to add a task. Once a task is posted it can be deleted.</p>
 	<!---<div id="button-main"></div>--->
 	<div id="schedule-main"></div>
 
@@ -40,6 +45,9 @@
 				console.log("passing into updateTask()" + newText + "and ");
 				var arr = this.state.tasksArray;
 				console.log("before: "+arr);
+				if(newText===""){
+					newText = "(Empty Task)";
+				}
 				arr.push(newText);
 				//arr.splice(i,0,newText);	//adds to array with 0 deletes
 				this.setState({tasksArray: arr});
@@ -48,7 +56,11 @@
 
 			//removing a published task
 			removeTask: function(i){
-
+				var arr = this.state.tasksArray;
+				console.log("before: "+arr);
+				arr.splice(i,1);
+				this.setState({tasksArray: arr});
+				console.log("after: "+arr);
 			},
 
 			//call this function whenever any changes have been made to the
@@ -67,11 +79,11 @@
 			//and functions accessible outside the scope of this component
 			eachTask: function(text,i){
 				return	(
-
+						<li className="list-group-item">
 							<IndividualTask key={i} index={i} updateArray={this.updateTask}>
-								{text}
+								{text} <a onClick={this.removeTask} href="#">x</a>
 							</IndividualTask>
-
+						</li>
 						)
 			},
 
@@ -80,10 +92,20 @@
 
 							<div className="TaskBoard">
 								<notifications> </notifications>
-								<AddingTask submitTaskText={this.submitTask}></AddingTask>
+								
+								<div className="panel panel-default">
+								  <div className="panel-heading"><b>Pending Tasks</b></div>
+								  <AddingTask submitTaskText={this.submitTask}></AddingTask>
+								  <ul className="list-group">
+								  	{
+								    this.state.tasksArray.map(this.eachTask)
+								  	}
+								  </ul>
+								</div>
+
 								{
 
-									this.state.tasksArray.map(this.eachTask)
+									
 								}
 							</div>
 
@@ -117,9 +139,12 @@
 		showFormRender: function(){
 			return(
 					<div>
-						<textarea ref="taskid" defaultValue=""></textarea><br/><br/>
-						<button onClick={this.submitBtn} type="button" className="btn btn-default">Submit</button>
-						<button onClick={this.cancelBtn} type="button" className="btn btn-default">Cancel</button>
+
+						<input type="text" className="form-control" placeholder="Schedule a Task" ref="taskid" defaultValue=""></input>
+						<button onClick={this.submitBtn} type="button" className="btn btn-default pull-right">Submit</button>
+						<button onClick={this.cancelBtn} type="button" className="btn btn-danger pull-right">Cancel</button>
+						<br/>
+						<br/>
 					</div>
 					
 			);
@@ -155,8 +180,9 @@
 			console.log("edit mode");
 		},
 
-		deteleBtn: function(){
+		deleteBtn: function(){
 			console.log("deleting task");
+			this.props.deleteTask(this.refs.taskid.value);
 		},
 
 		saveBtn: function (){
@@ -166,7 +192,7 @@
 		renderDefault: function(){
 			return	(
 					<div>
-						<p>{this.props.children}</p>
+						{this.props.children} 
 					</div>
 			);
 		},
@@ -184,28 +210,6 @@
 
 	ReactDOM.render(<TaskBoard/>, document.getElementById('schedule-main'));
 	//ReactDOM.render(<AddingTask/>, document.getElementById('button-main'));
-
-
-
-			// renderEmpty: function(){
-			// 	return(
-			// 			<div className="panel-body">
-			// 				<button onClick={this.addTaskBtn} type="button" className="btn btn-default">Add Task</button><br/><br/>
-			// 				<div className="alet alert-warning">
-			// 					<center><p>Currently no tasks are assigned!</p></center>
-			// 				</div>
-			// 			</div>
-			// 	);
-			// },
-
-			// renderTaskForm: function(){
-			// 	return(
-			// 			<div>
-			// 				<textarea defaultValue="Example Task"></textarea><br/>
-			// 				<button type="button" className="btn btn-default">Submit</button>
-			// 			</div>
-			// 	);
-			// },
 
 	</script>
 </div>

@@ -57,7 +57,7 @@
 			//removing a published task
 			removeTask: function(i){
 				var arr = this.state.tasksArray;
-				console.log("before: "+arr);
+				console.log("adding: "+ i+ "before: "+arr );
 				arr.splice(i,1);
 				this.setState({tasksArray: arr});
 				console.log("after: "+arr);
@@ -79,9 +79,9 @@
 			//and functions accessible outside the scope of this component
 			eachTask: function(text,i){
 				return	(
-						<li className="list-group-item">
-							<IndividualTask key={i} index={i} updateArray={this.updateTask}>
-								{text} <a onClick={this.removeTask} href="#">x</a>
+						<li key = {i} className="list-group-item">
+							<IndividualTask key={i} index={i} updateArray={this.updateTask} deleteTask={this.removeTask}>
+								{text} 
 							</IndividualTask>
 						</li>
 						)
@@ -182,7 +182,7 @@
 
 		deleteBtn: function(){
 			console.log("deleting task");
-			this.props.deleteTask(this.refs.taskid.value);
+			this.props.deleteTask(this.props.index);
 		},
 
 		saveBtn: function (){
@@ -192,7 +192,7 @@
 		renderDefault: function(){
 			return	(
 					<div>
-						{this.props.children} 
+						<p>{this.props.children} <a onClick={this.deleteBtn} href="#">x</a><p>
 					</div>
 			);
 		},

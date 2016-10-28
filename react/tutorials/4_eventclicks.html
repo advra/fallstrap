@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>On Click</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+	<div id="content">
+
+	<script type="text/jsx">
+
+		var ExampleComponent = React.createClass({
+			getStatus: function(){
+				alert("This user is currently "+ this.props.status+".");
+			},
+			render: function(){
+				return(
+					<div>
+						{this.props.user} <a href="#" onClick={this.getStatus}>?</a> 
+						<p>{this.props.children}</p>
+						
+					</div>
+				);
+			}
+
+		});
+
+		React.render(
+			<div>
+				<ExampleComponent user="Adrian" status="online">Lives in San Diego, California.</ExampleComponent>
+				<ExampleComponent user="Brian" status="offline">Lives in Honolulu, Hawaii.</ExampleComponent>
+				<ExampleComponent user="Rachel" status="online">Lives in Seattle, Washington.</ExampleComponent>
+			</div>,
+
+			document.getElementById("content")
+		); 
+		
+
+	</script>
+
+	</div>
+</body>
+</html>

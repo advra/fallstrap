@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A Component's Properties</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+	<div id="content"></div>
+
+	<script type="text/jsx">
+
+	//this is a short example how to make a component and display it 
+	//within a div
+
+
+		//each component has its own class 
+		//it determins how it looks and how they behave
+		//note: components need to be first letter in caps! Also always 
+		//		need render()
+
+		var TestComponent = React.createClass({ 
+			//needs render function that returns something
+			render: function(){
+				//instead of rendering static info we can render dynamic info
+				//using properties and calling them
+				return(
+					<h2>{this.props.person} likes to {this.props.things}</h2>
+				);
+			}
+		});
+
+		//call react.render function to display
+		//note that using a component multiple times, must be wrapped in 
+		//one div
+		React.render(
+			<div>
+				<TestComponent person="Brian" things="hiking with friends"/>
+				<TestComponent person="Adrian" things="fishing with their family"/>
+				<TestComponent person="Bernardo" things="playing video games"/>
+				<TestComponent person="Mathew" things="going on road trips "/>
+			</div>,
+			document.getElementById('content')
+
+		);
+		
+
+	</script>
+
+	</div>
+</body>
+</html>

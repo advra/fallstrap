@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>States</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+	<div id="container"></div>
+
+	<script type="text/jsx">
+
+
+		var CheckBox = React.createClass({
+
+			//called to setup inital state of component
+			//returns object of states
+			getInitialState: function(){
+				return {checked: true}
+			},
+
+			cursorChecked: function(){
+				this.setState({checked: !this.state.checked});
+			},
+
+			render: function(){
+				var msg;
+				if(this.state.checked){
+					msg = "checked"
+				}
+				else{
+					msg = "unchecked"
+				}
+				return (
+					<div>
+						<input type="checkbox" onChange={this.cursorChecked} defaultChecked={this.state.checked}/>
+						<h3>Checkbox is {msg}</h3>
+					</div>
+				);
+			}
+
+		});
+
+		React.render(<CheckBox/>, document.getElementById('container'));
+
+	</script>
+
+</body>
+</html>

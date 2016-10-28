@@ -1,0 +1,214 @@
+<!DOCTYPE html>    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Scheduler</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+
+    <!--- Bootstrap --->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="panel panel-body">
+<h1>Simple Scheduler</h1>
+<p>This is a small app that assigns and schedules tasks. Click on the "Add Task" button below to add a task.</p>
+	<!---<div id="button-main"></div>--->
+	<div id="schedule-main"></div>
+
+	<script type="text/jsx">
+
+
+
+	//this is the main component container that populates the list of tasks
+	var TaskBoard = React.createClass({
+			getInitialState: function(){
+				console.log("initializing array");
+				return{
+					//note: initally this is empty
+					//we can populate the array by directly manipulating it
+					//maybe in the future store array somewhere and unload it
+					tasksArray: [] 
+				}
+			},
+
+			//place new task
+			submitTask: function(newText){
+				console.log("passing into updateTask()" + newText + "and ");
+				var arr = this.state.tasksArray;
+				console.log("before: "+arr);
+				arr.push(newText);
+				//arr.splice(i,0,newText);	//adds to array with 0 deletes
+				this.setState({tasksArray: arr});
+				console.log("after: "+arr);
+			},
+
+			//removing a published task
+			removeTask: function(i){
+
+			},
+
+			//call this function whenever any changes have been made to the
+			//array to update the list view
+			//edit modify task
+			updateTask: function(newText, i){
+				console.log("determining tasks");
+				var arr = this.state.tasksArray;
+				//arr.splice(i,0,newText);	//adds to array with 0 deletes
+				arr[i] = newText;
+				this.setState({tasksArray: arr});
+			},
+
+
+			//assign each task with identifier and text that makes values
+			//and functions accessible outside the scope of this component
+			eachTask: function(text,i){
+				return	(
+
+							<IndividualTask key={i} index={i} updateArray={this.updateTask}>
+								{text}
+							</IndividualTask>
+
+						)
+			},
+
+			render: function(){
+				return	(
+
+							<div className="TaskBoard">
+								<notifications> </notifications>
+								<AddingTask submitTaskText={this.submitTask}></AddingTask>
+								{
+
+									this.state.tasksArray.map(this.eachTask)
+								}
+							</div>
+
+				);
+			}
+	});
+
+	//this main task button is used to display the new tas form 
+	var AddingTask = React.createClass({
+		getInitialState: function(){
+			return{addingTask: false}
+		},
+
+		//used to change the state to adding a task
+		addTaskBtn: function(){
+			console.log("adding a task now");
+			this.setState({addingTask: true});
+		},
+
+		submitBtn: function(){
+			console.log("Submitting task");
+			this.props.submitTaskText(this.refs.taskid.value);
+
+			this.setState({addingTask: false});
+		},
+
+		cancelBtn: function(){
+			this.setState({addingTask: false});
+		},
+
+		showFormRender: function(){
+			return(
+					<div>
+						<textarea ref="taskid" defaultValue=""></textarea><br/><br/>
+						<button onClick={this.submitBtn} type="button" className="btn btn-default">Submit</button>
+						<button onClick={this.cancelBtn} type="button" className="btn btn-default">Cancel</button>
+					</div>
+					
+			);
+			
+		},
+
+		hideFormRender: function(){
+			return	(
+				<div>
+					<button onClick={this.addTaskBtn} type="button" className="btn btn-default">Add Task</button>
+				</div>
+			);
+
+		},
+
+		render: function(){
+			console.log(this.state.addingTask);
+			if(this.state.addingTask){
+				return this.showFormRender();
+			}else{
+				return this.hideFormRender();
+			}
+		}
+
+	});
+
+	var IndividualTask = React.createClass({
+		getInitialState: function(){
+			return{editTask: false}
+		},
+
+		editBtn: function(){
+			console.log("edit mode");
+		},
+
+		deteleBtn: function(){
+			console.log("deleting task");
+		},
+
+		saveBtn: function (){
+			console.log("saving task");
+		},
+
+		renderDefault: function(){
+			return	(
+					<div>
+						<p>{this.props.children}</p>
+					</div>
+			);
+		},
+
+		renderModify: function(){
+
+		},
+
+		render: function(){
+			//display each individual form
+			return this.renderDefault();
+		}
+	});
+
+
+	ReactDOM.render(<TaskBoard/>, document.getElementById('schedule-main'));
+	//ReactDOM.render(<AddingTask/>, document.getElementById('button-main'));
+
+
+
+			// renderEmpty: function(){
+			// 	return(
+			// 			<div className="panel-body">
+			// 				<button onClick={this.addTaskBtn} type="button" className="btn btn-default">Add Task</button><br/><br/>
+			// 				<div className="alet alert-warning">
+			// 					<center><p>Currently no tasks are assigned!</p></center>
+			// 				</div>
+			// 			</div>
+			// 	);
+			// },
+
+			// renderTaskForm: function(){
+			// 	return(
+			// 			<div>
+			// 				<textarea defaultValue="Example Task"></textarea><br/>
+			// 				<button type="button" className="btn btn-default">Submit</button>
+			// 			</div>
+			// 	);
+			// },
+
+	</script>
+</div>
+	
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Simple Scheduler</title>
+
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+
+    <!--- Bootstrap --->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- mytheme-->
+	<link rel="stylesheet" href="scheduler.css">
+	<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container-fluid">
+	<table>
+			<td class="col-xs-12"><h1>Simple Scheduler</h1></td>
+	</table>
+
+		<p>This is a small app made by me that assigns and schedules tasks in a simple 
+		manner built using React and simple light css in bootstrap. Click on the "Add Task" 
+		button below to add a task. Once a task is posted it can be marked as completed or 
+		deleted. Task editing and sorting will be done in the future. I will be adding on
+		to this or perhaps work on other projects on my <a href="https://github.com/asdfadrian/fallstrap" 
+		target="_blank">Github.</a></p>
+
+		<div id="schedule-main"></div>
+
+
+	<script type="text/jsx">
+
+
+
+	//this is the main component container that populates the list of tasks
+	var TaskBoard = React.createClass({
+			getInitialState: function(){
+				console.log("initializing array");
+				return{
+					//note: initally this is empty
+					//we can populate the array by directly manipulating it
+					//maybe in the future store array somewhere and unload it
+					tasksArray: [], savedTasksArray:[], finishedTasks:[],
+					editMode:false 
+				}
+			},
+
+			//place new task
+			submitTask: function(newText){
+				console.log("passing into updateTask()" + newText + "and ");
+				var arr = this.state.tasksArray;
+				console.log("before: "+arr);
+				if(newText===""){
+					newText = "(Empty Task)";
+				}
+				arr.push(newText);
+				//arr.splice(i,0,newText);	//adds to array with 0 deletes
+				this.setState({tasksArray: arr});
+				console.log("after: "+arr);
+			},
+
+			//gets item put puts it into the savedTasksArray
+			saveTaskLater: function(i){
+				var arr = this.state.tasksArray;
+				var arr2 = this.state.savedTasksArray;
+				var tempData = arr[i];
+				arr2.push(tempData);
+				arr.splice(i,1);
+				this.setState({tasksArray: arr});
+				this.setState({savedTasksArray: arr2});
+				console.log("tasksArray: "+ arr);
+				console.log("savedTasks: "+ arr2);
+
+			},
+
+			finishTask: function(i){
+				var arr = this.state.tasksArray;
+				var arr2 = this.state.finishedTasks;
+				var tempData = arr[i];
+				arr2.push(tempData);
+				arr.splice(i,1);
+				this.setState({tasksArray: arr});
+				this.setState({finishedTasks: arr2});
+				console.log("tasksArray: "+ arr);
+				console.log("finishedTasks: "+ arr2);
+
+			},
+
+			//removing a published task
+			removeTask: function(i){
+				var arr = this.state.tasksArray;
+				console.log("adding: "+ i+ "before: "+arr );
+				arr.splice(i,1);
+				this.setState({tasksArray: arr});
+				console.log("after: "+arr);
+			},
+
+			//call this function whenever any changes have been made to the
+			//array to update the list view
+			//edit modify task
+			updateTask: function(newText, i){
+				console.log("determining tasks");
+				var arr = this.state.tasksArray;
+				//arr.splice(i,0,newText);	//adds to array with 0 deletes
+				arr[i] = newText;
+				this.setState({tasksArray: arr});
+			},
+
+			editTask: function(currText,i){
+				//enable editing to true
+				console.log("edit task button clicked");
+				editMode:true;
+
+			},
+
+
+			//assign each task with identifier and text that makes values
+			//and functions accessible outside the scope of this component
+			eachTask: function(text,i){
+				return	(
+
+							<li key = {i} className="list-group-item">
+								<IndividualTask key={i} index={i} editTask={this.editTask} deleteTask={this.removeTask} finishTask={this.finishTask}>
+									{text} 
+								</IndividualTask>
+							</li>
+							
+						)
+			},
+
+			eachFinishedTask: function(text,i){
+				return	(
+
+						<td key = {i} className="list-group-item list-group-item-success">
+							<FinishedTasks key={i} index={i} textfield={text} className="list-group-item list-group-item-success">
+								{text} 
+							</FinishedTasks>
+
+						</td>
+
+
+						)
+			},
+
+
+			render: function(){
+				return	(
+
+							<div className="TaskBoard">
+								<notifications> </notifications>
+								
+								<div className="panel panel-default">
+								  <div className="panel-heading"><b>Pending Tasks</b></div>
+								  <AddingTask submitTaskText={this.submitTask}></AddingTask>
+								  <ul className="list-group">
+								  	{
+								    this.state.tasksArray.map(this.eachTask)
+								  	}
+								  </ul>
+								</div>
+
+								<div className="panel panel-default">
+								  <div className="panel-heading"><b>Completed Tasks</b></div>
+								  <table className="table">
+								  <tr>
+								  	{
+								    this.state.finishedTasks.map(this.eachFinishedTask)
+								  	}
+								  </tr>
+								  </table>
+								</div>
+
+
+							</div>
+
+				);
+			}
+	});
+
+	//this main task button is used to display the new tas form 
+	var AddingTask = React.createClass({
+		getInitialState: function(){
+			return{addingTask: false}
+		},
+
+		//used to change the state to adding a task
+		addTaskBtn: function(){
+			console.log("adding a task now");
+			this.setState({addingTask: true});
+		},
+
+		submitBtn: function(){
+			console.log("Submitting task");
+			this.props.submitTaskText(this.refs.taskid.value);
+
+			this.setState({addingTask: false});
+		},
+
+		cancelBtn: function(){
+			this.setState({addingTask: false});
+		},
+
+		showFormRender: function(){
+			return(
+					<div>
+
+						<input type="text" className="form-control" placeholder="Schedule a Task" ref="taskid" defaultValue=""></input>
+						<button onClick={this.submitBtn} type="button" className="btn btn-default pull-right">Submit</button>
+						<button onClick={this.cancelBtn} type="button" className="btn btn-danger pull-right">Cancel</button>
+						<br/>
+						<br/>
+					</div>
+					
+			);
+			
+		},
+
+		hideFormRender: function(){
+			return	(
+				<div>
+					<button onClick={this.addTaskBtn} type="button" className="btn btn-default button-full">Add Task</button>
+					
+				</div>
+			);
+
+		},
+
+		render: function(){
+			console.log(this.state.addingTask);
+			if(this.state.addingTask){
+				return this.showFormRender();
+			}else{
+				return this.hideFormRender();
+			}
+		}
+
+	});
+
+	var FinishedTasks = React.createClass({
+		getInitialState:function(){
+			return{showfinished: false}
+		},
+
+		render: function(){
+			return(
+					<div>
+						{this.props.children}
+					</div>
+			);
+		}
+	});
+
+	var IndividualTask = React.createClass({
+		getInitialState: function(){
+			return{editTask: false}
+		},
+
+		editBtn: function(){
+			console.log("edit mode enabled");
+			this.props.editTask(this.props.index);
+		},
+
+		deleteBtn: function(){
+			console.log("deleting task");
+			this.props.deleteTask(this.props.index);
+		},
+
+		finishBtn: function(){
+			console.log("deleting task");
+			this.props.finishTask(this.props.index);
+		},
+
+		renderDefault: function(){
+			return	(
+					<div>
+						{this.props.children}
+						<DropDown passDeleteBtn={this.deleteBtn} passEditBtn={this.editBtn} passFinishBtn={this.finishBtn}></DropDown>
+					</div>
+			);
+		},
+
+		renderModify: function(){
+			return(
+					<div>
+						TEST
+					</div>
+			);
+		},
+
+		render: function(){
+			//display each individual form
+			//if(!editMode){
+				return this.renderDefault();
+			//}else{
+			//	return this.renderModify();
+			//}
+		}
+	});
+
+	var DropDown = React.createClass({
+		passEdit: function(){
+			this.props.passEditBtn(this.props.index);
+		},
+		passDelete: function(){
+			this.props.passDeleteBtn(this.props.index);
+		},
+		passFinish: function(){
+			this.props.passFinishBtn(this.props.index);
+		},
+
+
+		render: function(){
+			return(
+					<div className="btn-group  pull-right offset" >
+					  	<button onClick = {this.passFinish} type="button" className="btn btn-success">Finish</button>
+					  	<button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    	<span className="caret"></span>
+					    	<span className="sr-only">Toggle Dropdown</span>
+					  	</button>
+					  	<ul className="dropdown-menu">
+					    	<li><a onClick={this.passEdit} href="#">Edit</a></li>
+						    <li role="separator" className="divider"></li>
+						    <li><a onClick={this.passDelete} href="#">Delete</a></li>
+					  	</ul>
+					</div>
+			);
+		}
+	});
+
+
+	ReactDOM.render(<TaskBoard/>, document.getElementById('schedule-main'));
+
+	</script>
+</div>
+
+
+</body>
+</html>

@@ -7,27 +7,35 @@ import {editTaskAction} from '../actions/ActionIndex';
 class TaskBoard extends Component {
     //for each task loop
     renderList() {
-        return this.props.tasks.map((task) => {
+        console.log(this.props.tasks.tasks);
+        return this.props.tasks.tasks.map((task) => {
             if(task.status == "pending"){
                 return (
                     <li key={task.id}>
                         {task.id} {task.description}
-                        <button type="button">Finish</button>
+                        <button onClick={()=>this.props.deleteTask(task.id-1)} type="button">Finish</button>
                         <button type="button">Edit</button>
                         <button onClick={() => this.props.deleteTask(task)} type="button">Delete</button>
                     </li>
                 );
             }
+            // else{
+            //     return(
+            //         <div key={task.id}>
+            //             TASK COMPLETED
+            //         </div>
+            //     );
+            // }
         });
     }
 
 
     render() {
         //if null then display
-        if (!this.props.tasks) {
-            console.log(this.props.tasks);
-            return (<div>You currently have no tasks, please first create one...</div>);
-        }
+        // if (!this.props.tasks) {
+        //     console.log(this.props.tasks);
+        //     return (<div>You currently have no tasks, please first create one...</div>);
+        // }
         return (
             <div>
                 {this.renderList()}

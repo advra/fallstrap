@@ -10,47 +10,28 @@
  //this function will only return an array of users
  //smaller data to be added to master object
 
+//	tasks: [
 const initialState = {
-	tasks: [
-        {
-            id: 1,
-            description: "This is a task",
-            status: "pending"
-        },
-        {
-            id: 2,
-            description: "This is another task",
-            status: "pending"
-        },
-        {
-            id: 3,
-            description: "This is an easy task",
-            status: "pending" 
+	tasks:[
+			{
+		        id: 1,
+		        description: "This is a task",
+		        status: "pending"
+		    },
+		    {
+		        id: 2,
+		        description: "This is another task",
+		        status: "pending"
+		    },
+		    {
+		        id: 3,
+		        description: "This is an easy task",
+		        status: "pending" 
 
-        }
-	]
+		    }
+		]
 }
 
-// export default function () {
-// 	return [
-// 		{
-//             id: 1,
-//             description: "This is a task",
-//             status: "pending"
-//         },
-//         {
-//             id: 2,
-//             description: "This is another task",
-//             status: "pending"
-//         },
-//         {
-//             id: 3,
-//             description: "This is an easy task",
-//             status: "pending" 
-
-//         }
-// 	];	
-// }
 
 export default function (state = initialState, action) {
 
@@ -72,10 +53,22 @@ export default function (state = initialState, action) {
             break;
 
         case 'DELETE_TASK':
-            return Object.assign({}, state, {
-            	status: action.status
-            })
+        	// let newState = Object.assign({}, state);
+        	// newState.tasks[action.payload].status = "deleted";
+        	// //state = newState;
+         //    return newState;
+         //    break;
+            var newState = Object.assign({}, state);
+            if(newState.tasks.length != 1){
+        		newState.tasks.splice(action.payload,1);
+        	}else{
+        		newState.tasks.pop();
+        	}
+        	//state = newState;
+            return newState;
             break;
+
+            
     }
 
     return state;

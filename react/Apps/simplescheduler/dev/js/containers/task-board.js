@@ -8,28 +8,29 @@ class TaskBoard extends Component {
     //for each task loop
     renderList() {
         return this.props.tasks.map((task) => {
-            return (
-                <li key={task.id}>
-                    {task.id} {task.description}
-                    <button type="button">Finish</button>
-                    <button onClick={() => this.props.editTask(task)} type="button">Edit</button>
-                    <button onClick={() => this.props.deleteTask(task)} type="button">Delete</button>
-                </li>
-            );
+            if(task.status == "pending"){
+                return (
+                    <li key={task.id}>
+                        {task.id} {task.description}
+                        <button type="button">Finish</button>
+                        <button type="button">Edit</button>
+                        <button onClick={() => this.props.deleteTask(task)} type="button">Delete</button>
+                    </li>
+                );
+            }
         });
     }
 
 
     render() {
+        //if null then display
         if (!this.props.tasks) {
-            return (<div>Select a task...</div>);
+            console.log(this.props.tasks);
+            return (<div>You currently have no tasks, please first create one...</div>);
         }
         return (
             <div>
-                <li>
-                    {this.renderList()}
-                </li>
-
+                {this.renderList()}
             </div>
         );
     }
@@ -41,6 +42,7 @@ class TaskBoard extends Component {
 function mapStateToProps(state) {
     return {
         //prop = peice of object from master
+        //tasks: state.taskHandler
         tasks: state.tasks
     };
 }

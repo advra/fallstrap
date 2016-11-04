@@ -10,20 +10,75 @@
  //this function will only return an array of users
  //smaller data to be added to master object
 
-export default function () {
-    return [
+const initialState = {
+	tasks: [
         {
             id: 1,
-            description: "This is a task"
+            description: "This is a task",
+            status: "pending"
         },
         {
             id: 2,
-            description: "This is another task"
+            description: "This is another task",
+            status: "pending"
         },
         {
             id: 3,
-            description: "This is a final task" 
-        }
+            description: "This is an easy task",
+            status: "pending" 
 
-    ]
+        }
+	]
 }
+
+// export default function () {
+// 	return [
+// 		{
+//             id: 1,
+//             description: "This is a task",
+//             status: "pending"
+//         },
+//         {
+//             id: 2,
+//             description: "This is another task",
+//             status: "pending"
+//         },
+//         {
+//             id: 3,
+//             description: "This is an easy task",
+//             status: "pending" 
+
+//         }
+// 	];	
+// }
+
+export default function (state = initialState, action) {
+
+    switch (action.type) {
+        case 'ADD_TASK':
+            return Object.assign({}, state, {
+            	tasks: [
+            		...state.tasks,
+            		{
+            			description: action.text,
+            			status: action.status
+            		}
+            	]
+            })
+            break;
+
+        case 'EDIT_TASK':
+            return action.payload;
+            break;
+
+        case 'DELETE_TASK':
+            return Object.assign({}, state, {
+            	status: action.status
+            })
+            break;
+    }
+
+    return state;
+}
+
+

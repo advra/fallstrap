@@ -3,14 +3,18 @@
 
 //actions tell application something happened
 //reducer handles announcements
+
+export function toggleAddBtnAction(){
+    return{
+        type: 'TOGGLE_ADD'
+    }
+}
+
 export const addTaskAction = (task) => {
     //below is what is returned known as the Action
     return {
-    	//descriptive string
         type: 'ADD_TASK',
-        //any info needed to give app in this case the object task
-        text: "Here is a sample description",
-        status: "pending"
+        text: "Here is a sample description"
     }
 };
 

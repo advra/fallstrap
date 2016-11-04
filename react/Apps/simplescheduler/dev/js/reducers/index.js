@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import Tasks from './reducer-tasks';
+import {doAddRender} from './reducer-tasks';
 //import TaskActions from './reducer-handle-tasks';
 /*
  * We combine all reducers into a single object before updated data is dispatched (sent) to store
@@ -14,6 +15,7 @@ const allReducers = combineReducers({
     //this will handle the task actions
     //taskactions: TaskActions
     tasks: Tasks
+
 });
 
 export default allReducers

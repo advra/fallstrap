@@ -3,17 +3,39 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {deleteTaskAction} from '../actions/ActionIndex';
 import {editTaskAction} from '../actions/ActionIndex';
+import {toggleAddBtnAction} from '../actions/ActionIndex';
+import {addTaskAction} from '../actions/ActionIndex';
 
 class TaskBoard extends Component {
-    //for each task loop
+    renderAddModule(){
+        if(this.props.tasks.renderAdd){
+            return(
+                <div>
+                    <input type="text" className="form-control" placeholder="Schedule a Task" ref="taskid" defaultValue=""></input>
+                    <button onClick={() => this.props.addTaskBtn()} type="button" className="btn btn-default pull-right">Submit</button>
+                    <button onClick={() => this.props.toggleAddBtn()} type="button" className="btn btn-danger pull-right">Cancel</button>
+                    <br/>
+                    <br/>
+                </div>    
+            );
+        }else{
+            return(
+                <div>
+                    <button onClick={() => this.props.toggleAddBtn()} type="button" className="btn btn-default button-full">Add Task</button>
+                </div>
+            );
+
+        }
+    }
+
     renderList() {
-        console.log(this.props.tasks.tasks);
+        //console.log(this.props.tasks.tasks);
         return this.props.tasks.tasks.map((task) => {
             if(task.status == "pending"){
                 return (
                     <li key={task.id}>
                         {task.id} {task.description}
-                        <button onClick={()=>this.props.deleteTask(task.id-1)} type="button">Finish</button>
+                        <button type="button">Finish</button>
                         <button type="button">Edit</button>
                         <button onClick={() => this.props.deleteTask(task)} type="button">Delete</button>
                     </li>
@@ -38,6 +60,7 @@ class TaskBoard extends Component {
         // }
         return (
             <div>
+                {this.renderAddModule()}
                 {this.renderList()}
             </div>
         );
@@ -52,6 +75,7 @@ function mapStateToProps(state) {
         //prop = peice of object from master
         //tasks: state.taskHandler
         tasks: state.tasks
+
     };
 }
 
@@ -63,7 +87,9 @@ function matchDispatchToProps(dispatch){
         //prop = function
         {
             deleteTask: deleteTaskAction,
-            editTask: editTaskAction
+            editTask: editTaskAction,
+            toggleAddBtn: toggleAddBtnAction,
+            addTaskBtn: addTaskAction
         }, dispatch)
 }
 

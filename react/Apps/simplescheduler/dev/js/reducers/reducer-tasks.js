@@ -29,23 +29,32 @@ const initialState = {
 		        status: "pending" 
 
 		    }
-		]
+		],
+        renderAdd: false
 }
 
 
 export default function (state = initialState, action) {
 
     switch (action.type) {
+        case 'TOGGLE_ADD':
+            var toggleState = Object.assign({}, state);
+            toggleState.renderAdd = !toggleState.renderAdd;
+            //console.log(toggleState);
+            return toggleState;
+            break;
+
         case 'ADD_TASK':
-            return Object.assign({}, state, {
-            	tasks: [
-            		...state.tasks,
-            		{
-            			description: action.text,
-            			status: action.status
-            		}
-            	]
-            })
+            var testState = Object.assign({}, state);
+            var addState = Object.assign({}, testState.tasks[state.tasks.length+1], {id: state.tasks.length+1, description: action.text, status: "pending"});
+            console.log("ADDING");
+            console.log(addState);
+            //var addNewObj = Object.assign({}, state.tasks, addState);
+            //console.log(addNewObj);
+            //addState.task.push(addState);
+            //delete tempState.renderAdd;
+            state.push(addState);
+
             break;
 
         case 'EDIT_TASK':
@@ -68,7 +77,6 @@ export default function (state = initialState, action) {
             return newState;
             break;
 
-            
     }
 
     return state;

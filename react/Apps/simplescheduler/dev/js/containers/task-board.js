@@ -11,17 +11,43 @@ class TaskBoard extends Component {
         if(this.props.tasks.renderAdd){
             return(
                 <div>
-                    <input type="text" className="form-control" placeholder="Schedule a Task" ref="taskid" defaultValue=""></input>
-                    <button onClick={() => this.props.addTaskBtn()} type="button" className="btn btn-default pull-right">Submit</button>
-                    <button onClick={() => this.props.toggleAddBtn()} type="button" className="btn btn-danger pull-right">Cancel</button>
-                    <br/>
-                    <br/>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Schedule a Task" 
+                        ref="taskid" 
+                        defaultValue=""  
+                        >
+
+                    </input>
+                    <button 
+                        onClick={() => this.props.addTaskBtn(this.refs.taskid.value)} 
+                        type="button" 
+                        className="btn btn-default pull-right"
+                        >
+                        Submit
+                    </button>
+
+                    <button 
+                        onClick={() => this.props.toggleAddBtn()} 
+                        type="button" 
+                        className="btn btn-danger pull-right"
+                        >
+                        Cancel
+                    </button>
                 </div>    
             );
         }else{
             return(
                 <div>
-                    <button onClick={() => this.props.toggleAddBtn()} type="button" className="btn btn-default button-full">Add Task</button>
+                    <button 
+                        onClick={() => this.props.toggleAddBtn()} 
+                        type="button" 
+                        className="btn btn-default button-full"
+                        >
+
+                        Add Task
+                    </button>
                 </div>
             );
 
@@ -34,10 +60,16 @@ class TaskBoard extends Component {
             if(task.status == "pending"){
                 return (
                     <li key={task.id}>
-                        {task.id} {task.description}
+                        {task.description}
                         <button type="button">Finish</button>
                         <button type="button">Edit</button>
-                        <button onClick={() => this.props.deleteTask(task)} type="button">Delete</button>
+                        <button 
+                            onClick={() => this.props.deleteTask(task)} 
+                            type="button"
+                            
+                            >
+                            Delete
+                        </button>
                     </li>
                 );
             }
@@ -53,11 +85,14 @@ class TaskBoard extends Component {
 
 
     render() {
-        //if null then display
-        // if (!this.props.tasks) {
-        //     console.log(this.props.tasks);
-        //     return (<div>You currently have no tasks, please first create one...</div>);
-        // }
+        console.log("sizE: " + this.props.tasks.size);
+        if (this.props.tasks.tasks.length == 0) {
+            return (
+                <div>
+                    {this.renderAddModule()}
+                    You currently have no tasks, please first create one...
+                </div>);
+        }
         return (
             <div>
                 {this.renderAddModule()}

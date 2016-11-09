@@ -10,18 +10,18 @@ export function toggleAddBtnAction(){
     }
 }
 
-export const addTaskAction = (task) => {
+export const addTaskAction = (text) => {
     //below is what is returned known as the Action
     return {
         type: 'ADD_TASK',
-        text: "Here is a sample description"
+        text: text
     }
 };
 
 export const deleteTaskAction = (task) => {
     return {
         type: 'DELETE_TASK',
-        payload: task.id-1 //get index array reference
+        id: task.id //get index array reference
     }
 };
 

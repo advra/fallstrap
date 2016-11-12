@@ -5,6 +5,8 @@ import {deleteTaskAction} from '../actions/ActionIndex';
 import {editTaskAction} from '../actions/ActionIndex';
 import {toggleAddBtnAction} from '../actions/ActionIndex';
 import {addTaskAction} from '../actions/ActionIndex';
+import {finishTaskAction} from '../actions/ActionIndex';
+import {submitEditTaskAction} from '../actions/ActionIndex';
 
 class TaskBoard extends Component {
     renderAddModule(){
@@ -25,7 +27,7 @@ class TaskBoard extends Component {
                         type="button" 
                         className="btn btn-default pull-right"
                         >
-                        Submit
+                        Add
                     </button>
 
                     <button 
@@ -55,37 +57,71 @@ class TaskBoard extends Component {
     }
 
     renderList() {
-        //console.log(this.props.tasks.tasks);
         return this.props.tasks.tasks.map((task) => {
             if(task.status == "pending"){
                 return (
                     <li key={task.id}>
-                        {task.description}
-                        <button type="button">Finish</button>
-                        <button type="button">Edit</button>
+                        Assigned: {task.stamp} - {task.description}
+                        <button 
+                            type="button"
+                            onClick={() => this.props.finishBtn(task)}
+                            >
+                            Finish
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => this.props.editTask(task)}
+                            >
+                            Edit
+                        </button>
                         <button 
                             onClick={() => this.props.deleteTask(task)} 
                             type="button"
-                            
                             >
                             Delete
                         </button>
                     </li>
                 );
             }
-            // else{
-            //     return(
-            //         <div key={task.id}>
-            //             TASK COMPLETED
-            //         </div>
-            //     );
-            // }
+            if(task.status == "edit"){
+                return (
+                    <li key={task.id}>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            placeholder="Add a description" 
+                            ref="edittaskid" 
+                            defaultValue={task.description}  
+                            >
+                        </input>
+                         <button 
+                            onClick={() => this.props.finihEditBtn(task,this.refs.edittaskid.value)} 
+                            type="button" 
+                            className="btn btn-default pull-right"
+                            >
+                            Done
+                        </button>
+                    </li>
+                );
+            }
+
+        });
+    }
+
+renderCompleted() {
+        return this.props.tasks.tasks.map((task) => {
+            if(task.status == "finished"){
+                return (
+                    <li key={task.id}>
+                        Assigned: {task.stamp} - {task.description} - Completed: {task.completed}
+                    </li>
+                );
+            }
         });
     }
 
 
     render() {
-        console.log("sizE: " + this.props.tasks.size);
         if (this.props.tasks.tasks.length == 0) {
             return (
                 <div>
@@ -93,10 +129,16 @@ class TaskBoard extends Component {
                     You currently have no tasks, please first create one...
                 </div>);
         }
+        //render completed tasks too if any
         return (
             <div>
                 {this.renderAddModule()}
+                <b>Pending Tasks:</b>
+                <br/>
                 {this.renderList()}
+                <br/>
+                <b>Completed Tasks:</b>
+                {this.renderCompleted()}
             </div>
         );
     }
@@ -123,8 +165,10 @@ function matchDispatchToProps(dispatch){
         {
             deleteTask: deleteTaskAction,
             editTask: editTaskAction,
+            finihEditBtn: submitEditTaskAction,
             toggleAddBtn: toggleAddBtnAction,
-            addTaskBtn: addTaskAction
+            addTaskBtn: addTaskAction,
+            finishBtn: finishTaskAction
         }, dispatch)
 }
 

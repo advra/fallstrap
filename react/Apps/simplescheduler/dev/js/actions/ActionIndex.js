@@ -25,9 +25,30 @@ export const deleteTaskAction = (task) => {
     }
 };
 
+export const finishTaskAction = (task) => {
+    return {
+        type: 'FINISH_TASK',
+        id: task.id, //get index array reference
+        task: task
+    }
+};
+
 export const editTaskAction = (task) => {
     return {
         type: 'EDIT_TASK',
-        payload: task
+        id: task.id,
+        payload: task,
+        text: task.description,
+        status: task.status
+    }
+};
+
+export const submitEditTaskAction = (task, text) => {
+    return {
+        type: 'SUBMIT_TASK_EDIT',
+        id: task.id,
+        payload: task,
+        text: text,
+        status: task.status
     }
 };
